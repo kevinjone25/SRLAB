@@ -1,0 +1,17 @@
+set protocols source-packet-routing segment-list TOP-MPLS entry 10 label 9102
+set protocols source-packet-routing segment-list TOP-MPLS entry 20 label 9103
+set protocols source-packet-routing segment-list TOP-MPLS entry 30 label 9104
+set protocols source-packet-routing source-routing-path TO-PE2-MPLS to 100.0.0.104
+set protocols source-packet-routing source-routing-path TO-PE2-MPLS color 100
+set protocols source-packet-routing source-routing-path TO-PE2-MPLS primary TOP-MPLS
+
+set protocols source-packet-routing segment-list TOP-SRV6 entry 10 srv6-sid fc00:0:102::1
+set protocols source-packet-routing segment-list TOP-SRV6 entry 20 srv6-sid fc00:0:103::1
+set protocols source-packet-routing segment-list TOP-SRV6 entry 30 srv6-sid fc00:0:104::1
+set protocols source-packet-routing source-routing-path TO-PE2-SRV6 to 2001:db8::104
+set protocols source-packet-routing source-routing-path TO-PE2-SRV6 color 200
+set protocols source-packet-routing source-routing-path TO-PE2-SRV6 srv6
+set protocols source-packet-routing source-routing-path TO-PE2-SRV6 primary TOP-SRV6
+
+set routing-options static route 172.16.2.0/24 next-hop 100.0.0.104 resolve
+set routing-options rib inet6.0 static route 2001:db8:102::/64 next-hop 2001:db8::104 resolve

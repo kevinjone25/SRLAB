@@ -1,0 +1,67 @@
+name: srlab
+
+topology:
+  kinds:
+    juniper_vmx:
+      image: vrnetlab/juniper_vmx:23.2R2-S6.4
+    linux:
+      image: wbitt/network-multitool:alpine-extra
+
+  nodes:
+    pe1:
+      kind: juniper_vmx
+      startup-config: configs/isis/pe1.conf
+      enforce-startup-config: true
+    r2:
+      kind: juniper_vmx
+      startup-config: configs/isis/r2.conf
+      enforce-startup-config: true
+    r3:
+      kind: juniper_vmx
+      startup-config: configs/isis/r3.conf
+      enforce-startup-config: true
+    pe2:
+      kind: juniper_vmx
+      startup-config: configs/isis/pe2.conf
+      enforce-startup-config: true
+    r5:
+      kind: juniper_vmx
+      startup-config: configs/isis/r5.conf
+      enforce-startup-config: true
+    r6:
+      kind: juniper_vmx
+      startup-config: configs/isis/r6.conf
+      enforce-startup-config: true
+
+    h1:
+      kind: linux
+      exec:
+        - ip addr add 172.16.1.10/24 dev eth1
+        - ip -6 addr add 2001:db8:101::10/64 dev eth1
+        - ip route del default
+        - ip route add default via 172.16.1.1
+        - ip -6 route add default via 2001:db8:101::1
+    h2:
+      kind: linux
+      exec:
+        - ip addr add 172.16.2.10/24 dev eth1
+        - ip -6 addr add 2001:db8:102::10/64 dev eth1
+        - ip route del default
+        - ip route add default via 172.16.2.1
+        - ip -6 route add default via 2001:db8:102::1
+
+  links:
+    # Top main path (high metric)
+    - endpoints: ["pe1:ge-0/0/0", "r2:ge-0/0/0"]
+    - endpoints: ["r2:ge-0/0/1", "r3:ge-0/0/0"]
+    - endpoints: ["r3:ge-0/0/1", "pe2:ge-0/0/0"]
+    # Bottom main path (low metric, default IGP path)
+    - endpoints: ["pe1:ge-0/0/1", "r5:ge-0/0/0"]
+    - endpoints: ["r5:ge-0/0/1", "r6:ge-0/0/0"]
+    - endpoints: ["r6:ge-0/0/1", "pe2:ge-0/0/1"]
+    # Cross-links (used for TI-LFA backup, not for default IGP)
+    - endpoints: ["r2:ge-0/0/2", "r5:ge-0/0/2"]
+    - endpoints: ["r3:ge-0/0/2", "r6:ge-0/0/2"]
+    # Hosts
+    - endpoints: ["pe1:ge-0/0/2", "h1:eth1"]
+    - endpoints: ["pe2:ge-0/0/2", "h2:eth1"]

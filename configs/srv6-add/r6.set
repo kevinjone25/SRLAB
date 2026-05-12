@@ -1,0 +1,3 @@
+set routing-options source-packet-routing srv6 locator LOC-R6 fc00:0:106::/64
+set routing-options source-packet-routing srv6 locator LOC-R6 end-sid fc00:0:106::1
+set protocols isis source-packet-routing srv6 locator LOC-R6 level 2
