@@ -2,34 +2,34 @@ name: srlab
 
 topology:
   kinds:
-    juniper_vmx:
-      image: vrnetlab/juniper_vmx:23.2R2-S6.4
+    juniper_vjunosrouter:
+      image: vrnetlab/juniper_vjunos-router:25.4R1.12
     linux:
       image: wbitt/network-multitool:alpine-extra
 
   nodes:
     pe1:
-      kind: juniper_vmx
+      kind: juniper_vjunosrouter
       startup-config: configs/isis/pe1.conf
       enforce-startup-config: true
     r2:
-      kind: juniper_vmx
+      kind: juniper_vjunosrouter
       startup-config: configs/isis/r2.conf
       enforce-startup-config: true
     r3:
-      kind: juniper_vmx
+      kind: juniper_vjunosrouter
       startup-config: configs/isis/r3.conf
       enforce-startup-config: true
     pe2:
-      kind: juniper_vmx
+      kind: juniper_vjunosrouter
       startup-config: configs/isis/pe2.conf
       enforce-startup-config: true
     r5:
-      kind: juniper_vmx
+      kind: juniper_vjunosrouter
       startup-config: configs/isis/r5.conf
       enforce-startup-config: true
     r6:
-      kind: juniper_vmx
+      kind: juniper_vjunosrouter
       startup-config: configs/isis/r6.conf
       enforce-startup-config: true
 
