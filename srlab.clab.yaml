@@ -4,6 +4,16 @@ topology:
   kinds:
     juniper_vmx:
       image: vrnetlab/juniper_vmx:23.2R2-S6.4
+      exec:
+        # Work around a vrnetlab launch race where vcp-int can appear after
+        # the first bridge attach attempt, leaving the RE unable to see vFPC 0.
+        - >-
+          sh -c 'i=0; while [ $i -lt 60 ]; do
+          [ -d /sys/class/net/int_cp ] && [ -d /sys/class/net/vcp-int ] && break;
+          i=$((i+1)); sleep 1;
+          done;
+          [ -d /sys/class/net/vcp-int/brport ] || brctl addif int_cp vcp-int;
+          ip link set vcp-int up'
     linux:
       image: wbitt/network-multitool:alpine-extra
 
